@@ -1,28 +1,261 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}Gestión de Incidentes Educativos (MVP){% endblock %}</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description"
+          content="Sistema de Gestión de Incidentes Educativos">
+    <meta name="theme-color" content="#10243a">
+
+    <title>
+        {% block title %}Gestión de Incidentes Educativos{% endblock %}
+    </title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --primary: #10243a;
+            --secondary: #183953;
+            --accent: #00b5ad;
+            --background: #f2f5f9;
+            --text: #243449;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--background);
+            color: var(--text);
+            font-family: system-ui, -apple-system,
+                         "Segoe UI", sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(
+                110deg,
+                var(--primary),
+                var(--secondary)
+            );
+            box-shadow: 0 3px 12px rgba(0,0,0,.12);
+        }
+
+        .navbar-brand {
+            font-size: 1.1rem;
+            letter-spacing: .2px;
+        }
+
+        .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--accent);
+            color: #05252c;
+            font-weight: 800;
+        }
+
+        .user-badge {
+            padding: .55rem .8rem;
+            border: 1px solid rgba(255,255,255,.25);
+            border-radius: 12px;
+            color: white;
+            background: rgba(255,255,255,.08);
+            font-size: .86rem;
+        }
+
+        .btn-accent {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #05252c;
+            font-weight: 600;
+        }
+
+        .btn-accent:hover {
+            background: #009a94;
+            border-color: #009a94;
+            color: white;
+        }
+
+        .main-content {
+            flex: 1;
+            padding-top: 2rem;
+            padding-bottom: 3rem;
+        }
+
+        .page-panel {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e5eaf0;
+            box-shadow: 0 5px 18px rgba(16,36,58,.05);
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid #e5eaf0;
+            padding: 1rem 0;
+            font-size: .84rem;
+            color: #64748b;
+        }
+
+        .navbar .nav-link {
+            color: rgba(255,255,255,.86);
+        }
+
+        .navbar .nav-link:hover,
+        .navbar .nav-link:focus {
+            color: white;
+        }
+
+        :focus-visible {
+            outline: 3px solid #00b5ad;
+            outline-offset: 3px;
+        }
+
+        @media (max-width: 991.98px) {
+            .navbar-actions {
+                align-items: stretch !important;
+                padding-top: 1rem;
+                padding-bottom: .5rem;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
 </head>
-<body class="bg-light">
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-      <a class="navbar-brand fw-semibold" href="{{ url_for('dashboard') }}">Incidentes Educativos · MVP</a>
-      <div class="d-flex align-items-center gap-2 flex-wrap">
-        <span class="badge text-bg-secondary">{{ usuario }} ({{ rol }})</span>
-        <a class="btn btn-sm btn-outline-light" href="{{ url_for('dashboard') }}">Tablero</a>
-        <a class="btn btn-sm btn-warning" href="{{ url_for('registrar') }}">+ Nuevo Incidente</a>
-        <a class="btn btn-sm btn-outline-info" href="{{ url_for('login') }}">Cambiar Usuario</a>
-      </div>
-    </div>
-  </nav>
 
-  <main class="container pb-5">
-    {% block content %}{% endblock %}
-  </main>
+<body>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Navegación principal -->
+    <nav class="navbar navbar-expand-lg navbar-dark"
+         aria-label="Navegación principal">
+        <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center gap-2"
+               href="{{ url_for('dashboard') }}">
+                <span class="brand-icon" aria-hidden="true">IE</span>
+                <span class="fw-semibold">
+                    Incidentes Educativos
+                    <small class="d-block fw-normal opacity-75">
+                        Sistema de gestión · MVP
+                    </small>
+                </span>
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menuPrincipal"
+                aria-controls="menuPrincipal"
+                aria-expanded="false"
+                aria-label="Abrir menú de navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse"
+                 id="menuPrincipal">
+
+                <div class="navbar-nav ms-auto align-items-lg-center
+                            gap-lg-2 navbar-actions">
+
+                    {% if usuario %}
+                    <span class="user-badge">
+                        {{ usuario }} · {{ rol | default('Usuario', true) }}
+                    </span>
+                    {% endif %}
+
+                    <a class="btn btn-sm btn-outline-light"
+                       href="{{ url_for('dashboard') }}">
+                        Tablero
+                    </a>
+
+                    <a class="btn btn-sm btn-accent"
+                       href="{{ url_for('registrar') }}">
+                        + Nuevo incidente
+                    </a>
+
+                    <a class="btn btn-sm btn-outline-info"
+                       href="{{ url_for('login') }}">
+                        Cambiar usuario
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main id="contenidoPrincipal"
+          class="container main-content">
+
+        <!-- Mensajes de Flask -->
+        {% with mensajes = get_flashed_messages(
+            with_categories=true
+        ) %}
+            {% if mensajes %}
+                {% for categoria, mensaje in mensajes %}
+
+                    {% set tipo = {
+                        'error': 'danger',
+                        'success': 'success',
+                        'warning': 'warning',
+                        'info': 'info'
+                    }.get(categoria, 'info') %}
+
+                    <div
+                        class="alert alert-{{ tipo }}
+                               alert-dismissible fade show"
+                        role="alert">
+
+                        {{ mensaje }}
+
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Cerrar mensaje">
+                        </button>
+                    </div>
+
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- Pie de página -->
+    <footer class="footer">
+        <div class="container d-flex flex-wrap
+                    justify-content-between gap-2">
+
+            <span>
+                © {{ anio_actual | default(2026) }}
+                Gestión de Incidentes Educativos
+            </span>
+
+            <span>
+                Plataforma de seguimiento y seguridad
+            </span>
+
+        </div>
+    </footer>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+    </script>
+
+    {% block extra_js %}{% endblock %}
+
 </body>
 </html>
