@@ -168,6 +168,7 @@ def dashboard():
     return render_template(
         "dashboard.html",
         incidentes=incidentes,
+        totales=totales,
         total=total,
         registrados=registrados,
         en_atencion=en_atencion,
