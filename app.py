@@ -90,7 +90,7 @@ def login():
             session["username"] = user["username"]
             session["usuario"] = user["nombre"]
             session["rol"] = user["rol"]
-            return redirect(url_for("index"))
+            return redirect(url_for("dashboard"))
         else:
             flash("Usuario o contraseña incorrectos.", "danger")
 
@@ -216,7 +216,7 @@ def registrar():
             cursor.execute("UPDATE incidentes SET codigo = ? WHERE id = ?", (codigo, nuevo_id))
             conn.commit()
             conn.close()
-            return redirect(url_for("index"))
+            return redirect(url_for("dashboard"))
 
     return render_template(
         "registrar.html",
@@ -233,7 +233,7 @@ def detalle(incidente_id):
 
     if not incidente:
         conn.close()
-        return redirect(url_for("index"))
+        return redirect(url_for("dashboard"))
 
     if request.method == "POST":
         nuevo_estado = request.form.get("estado", incidente["estado"])
