@@ -1,109 +1,731 @@
+
 {% extends "base.html" %}
-{% block title %}Tablero de Incidentes{% endblock %}
+
+{% block title %}
+Tablero | Gestión de Incidentes Educativos
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .dashboard-title {
+        font-weight: 750;
+        letter-spacing: -.6px;
+        color: #10243a;
+    }
+
+    .dashboard-subtitle {
+        color: #64748b;
+        font-size: .92rem;
+    }
+
+    .stat-card {
+        background: white;
+        border: 1px solid #e7edf4;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(16,36,58,.05);
+        height: 100%;
+        transition: transform .2s ease,
+                    box-shadow .2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 9px 25px rgba(16,36,58,.11);
+    }
+
+    .stat-label {
+        color: #64748b;
+        font-size: .84rem;
+        font-weight: 500;
+    }
+
+    .stat-value {
+        font-size: 2.1rem;
+        font-weight: 750;
+        line-height: 1.2;
+    }
+
+    .stat-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        font-weight: 750;
+    }
+
+    .icon-total {
+        background: #dbeafe;
+        color: #2563eb;
+    }
+
+    .icon-registered {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+    .icon-progress {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .icon-solved {
+        background: #d1fae5;
+        color: #047857;
+    }
+
+    .dashboard-card {
+        border: 1px solid #e7edf4;
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 4px 16px rgba(16,36,58,.05);
+        overflow: hidden;
+    }
+
+    .section-title {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #10243a;
+    }
+
+    .progress {
+        background: #e9eef5;
+        border-radius: 100px;
+    }
+
+    .progress-bar {
+        border-radius: 100px;
+    }
+
+    .custom-table {
+        font-size: .88rem;
+    }
+
+    .custom-table thead th {
+        background: #f7f9fc;
+        color: #526278;
+        font-size: .76rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .3px;
+        padding: 1rem;
+        white-space: nowrap;
+    }
+
+    .custom-table tbody td {
+        padding: 1rem;
+        border-color: #edf1f5;
+    }
+
+    .custom-table tbody tr:hover {
+        background: #f5fafb;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: .45rem .7rem;
+        font-size: .73rem;
+        font-weight: 650;
+        border-radius: 20px;
+        white-space: nowrap;
+    }
+
+    .priority-low {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .priority-medium {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+
+    .priority-high {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .priority-critical {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-registered {
+        background: #e2e8f0;
+        color: #334155;
+    }
+
+    .status-progress {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-resolved {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .empty-state {
+        padding: 3rem 1rem;
+        text-align: center;
+        color: #64748b;
+    }
+
+    .empty-state-icon {
+        font-size: 2.5rem;
+        margin-bottom: .75rem;
+    }
+
+    @media (max-width: 576px) {
+        .stat-value {
+            font-size: 1.65rem;
+        }
+
+        .stat-icon {
+            width: 34px;
+            height: 34px;
+        }
+
+        .dashboard-title {
+            font-size: 1.45rem;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .stat-card {
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="row g-3 mb-4">
-  <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body">
-        <div class="text-muted small">Total Incidentes</div>
-        <div class="fs-3 fw-bold">{{ totales.total or 0 }}</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body">
-        <div class="text-muted small">Registrados</div>
-        <div class="fs-3 fw-bold text-primary">{{ totales.registrados or 0 }}</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body">
-        <div class="text-muted small">En atención</div>
-        <div class="fs-3 fw-bold text-warning">{{ totales.en_atencion or 0 }}</div>
-      </div>
-    </div>
-  </div>
-  <div class="col-6 col-md-3">
-    <div class="card border-0 shadow-sm">
-      <div class="card-body">
-        <div class="text-muted small">Resueltos</div>
-        <div class="fs-3 fw-bold text-success">{{ totales.resueltos or 0 }}</div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<div class="card border-0 shadow-sm mb-4">
-  <div class="card-body">
-    <form method="GET" action="{{ url_for('dashboard') }}" class="row g-2 align-items-end">
-      <div class="col-md-4">
-        <label class="form-label small fw-semibold">Filtrar por estado</label>
-        <select name="estado" class="form-select">
-          {% for est in ["Todos", "Registrado", "En atención", "Resuelto"] %}
-            <option value="{{ est }}" {% if estado_filtro == est %}selected{% endif %}>{{ est }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label small fw-semibold">Filtrar por prioridad</label>
-        <select name="prioridad" class="form-select">
-          {% for prio in ["Todas", "Baja", "Media", "Alta", "Crítica"] %}
-            <option value="{{ prio }}" {% if prioridad_filtro == prio %}selected{% endif %}>{{ prio }}</option>
-          {% endfor %}
-        </select>
-      </div>
-      <div class="col-md-4 d-flex gap-2">
-        <button type="submit" class="btn btn-primary">Aplicar filtros</button>
-        <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">Limpiar</a>
-      </div>
+{% set total = totales.total | default(0, true) | int %}
+{% set registrados = totales.registrados | default(0, true) | int %}
+{% set en_atencion = totales.en_atencion | default(0, true) | int %}
+{% set resueltos = totales.resueltos | default(0, true) | int %}
+
+{% set porcentaje = (
+    (resueltos / total * 100) | round(1)
+    if total > 0 else 0
+) %}
+
+<!-- ENCABEZADO -->
+
+<section class="mb-4">
+    <div class="d-flex flex-wrap
+                align-items-center justify-content-between
+                gap-3">
+
+        <div>
+            <h1 class="dashboard-title h3 mb-1">
+                Centro de Control de Incidentes
+            </h1>
+
+            <p class="dashboard-subtitle mb-0">
+                Monitoreo, seguimiento y gestión
+                de incidentes educativos.
+            </p>
+        </div>
+
+        <a href="{{ url_for('registrar') }}"
+           class="btn btn-accent px-3">
+            + Nuevo incidente
+        </a>
+
+    </div>
+</section>
+
+
+<!-- INDICADORES PRINCIPALES -->
+
+<section class="mb-4" aria-label="Indicadores del sistema">
+
+    <div class="row g-3">
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3">
+                <div class="d-flex justify-content-between
+                            align-items-start gap-2">
+
+                    <div>
+                        <div class="stat-label">
+                            Total incidentes
+                        </div>
+
+                        <div class="stat-value text-primary mt-2">
+                            {{ total }}
+                        </div>
+                    </div>
+
+                    <div class="stat-icon icon-total">
+                        #
+                    </div>
+                </div>
+
+                <div class="small text-muted mt-3">
+                    Incidentes registrados en el sistema
+                </div>
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3">
+
+                <div class="d-flex justify-content-between
+                            align-items-start gap-2">
+
+                    <div>
+                        <div class="stat-label">
+                            Registrados
+                        </div>
+
+                        <div class="stat-value mt-2"
+                             style="color:#475569">
+                            {{ registrados }}
+                        </div>
+                    </div>
+
+                    <div class="stat-icon icon-registered">
+                        R
+                    </div>
+                </div>
+
+                <div class="small text-muted mt-3">
+                    Pendientes de atención
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3">
+
+                <div class="d-flex justify-content-between
+                            align-items-start gap-2">
+
+                    <div>
+                        <div class="stat-label">
+                            En atención
+                        </div>
+
+                        <div class="stat-value text-warning mt-2">
+                            {{ en_atencion }}
+                        </div>
+                    </div>
+
+                    <div class="stat-icon icon-progress">
+                        !
+                    </div>
+                </div>
+
+                <div class="small text-muted mt-3">
+                    Casos en seguimiento
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="col-6 col-lg-3">
+            <div class="stat-card p-3">
+
+                <div class="d-flex justify-content-between
+                            align-items-start gap-2">
+
+                    <div>
+                        <div class="stat-label">
+                            Resueltos
+                        </div>
+
+                        <div class="stat-value text-success mt-2">
+                            {{ resueltos }}
+                        </div>
+                    </div>
+
+                    <div class="stat-icon icon-solved">
+                        ✓
+                    </div>
+                </div>
+
+                <div class="small text-muted mt-3">
+                    Casos finalizados
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ESTADÍSTICAS -->
+
+<section class="row g-3 mb-4">
+
+    <div class="col-lg-6">
+
+        <div class="dashboard-card p-4 h-100">
+
+            <h2 class="section-title mb-3">
+                Avance de resolución
+            </h2>
+
+            <div class="d-flex align-items-end
+                        justify-content-between mb-2">
+
+                <div class="display-6 fw-bold text-success">
+                    {{ porcentaje }}%
+                </div>
+
+                <span class="text-muted small">
+                    {{ resueltos }} de {{ total }}
+                </span>
+            </div>
+
+            <div class="progress"
+                 role="progressbar"
+                 aria-label="Porcentaje de incidentes resueltos"
+                 aria-valuenow="{{ porcentaje }}"
+                 aria-valuemin="0"
+                 aria-valuemax="100"
+                 style="height:12px">
+
+                <div class="progress-bar bg-success"
+                     style="width:{{ porcentaje }}%">
+                </div>
+
+            </div>
+
+            <p class="text-muted small mt-3 mb-0">
+                Porcentaje de incidentes que han
+                alcanzado el estado Resuelto.
+            </p>
+
+        </div>
+    </div>
+
+
+    <div class="col-lg-6">
+
+        <div class="dashboard-card p-4 h-100">
+
+            <h2 class="section-title mb-3">
+                Distribución por estado
+            </h2>
+
+            {% for etiqueta, cantidad, color in [
+                ('Registrados', registrados, 'secondary'),
+                ('En atención', en_atencion, 'warning'),
+                ('Resueltos', resueltos, 'success')
+            ] %}
+
+                {% set avance = (
+                    cantidad / total * 100
+                    if total > 0 else 0
+                ) %}
+
+                <div class="mb-3">
+
+                    <div class="d-flex justify-content-between
+                                small mb-1">
+
+                        <span>{{ etiqueta }}</span>
+
+                        <strong>{{ cantidad }}</strong>
+
+                    </div>
+
+                    <div class="progress"
+                         role="progressbar"
+                         aria-label="{{ etiqueta }}"
+                         aria-valuenow="{{ avance | round(1) }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100"
+                         style="height:9px">
+
+                        <div class="progress-bar bg-{{ color }}"
+                             style="width:{{ avance }}%">
+                        </div>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+</section>
+
+
+<!-- FILTROS -->
+
+<section class="dashboard-card p-4 mb-4">
+
+    <h2 class="section-title mb-3">
+        Filtros de búsqueda
+    </h2>
+
+    <form method="GET"
+          action="{{ url_for('dashboard') }}"
+          class="row g-3 align-items-end">
+
+        <div class="col-md-4">
+
+            <label for="estado"
+                   class="form-label fw-semibold small">
+                Estado del incidente
+            </label>
+
+            <select name="estado"
+                    id="estado"
+                    class="form-select">
+
+                {% for est in [
+                    "Todos",
+                    "Registrado",
+                    "En atención",
+                    "Resuelto"
+                ] %}
+
+                    <option value="{{ est }}"
+                        {% if estado_filtro == est %}
+                            selected
+                        {% endif %}>
+                        {{ est }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <label for="prioridad"
+                   class="form-label fw-semibold small">
+                Nivel de prioridad
+            </label>
+
+            <select name="prioridad"
+                    id="prioridad"
+                    class="form-select">
+
+                {% for prio in [
+                    "Todas",
+                    "Baja",
+                    "Media",
+                    "Alta",
+                    "Crítica"
+                ] %}
+
+                    <option value="{{ prio }}"
+                        {% if prioridad_filtro == prio %}
+                            selected
+                        {% endif %}>
+                        {{ prio }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+
+        <div class="col-md-4">
+
+            <div class="d-flex flex-wrap gap-2">
+
+                <button type="submit"
+                        class="btn btn-primary">
+                    Aplicar filtros
+                </button>
+
+                <a href="{{ url_for('dashboard') }}"
+                   class="btn btn-outline-secondary">
+                    Limpiar
+                </a>
+
+            </div>
+
+        </div>
+
     </form>
-  </div>
-</div>
 
-<div class="card border-0 shadow-sm">
-  <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-    <h5 class="mb-0">Incidentes Registrados</h5>
-    <a href="{{ url_for('registrar') }}" class="btn btn-sm btn-primary">Registrar Incidente</a>
-  </div>
-  <div class="table-responsive">
-    <table class="table table-hover align-middle mb-0">
-      <thead class="table-light">
-        <tr>
-          <th>Código</th>
-          <th>Título</th>
-          <th>Espacio</th>
-          <th>Prioridad</th>
-          <th>Estado</th>
-          <th>Asignado a</th>
-          <th>Acción</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for inc in incidentes %}
-        <tr>
-          <td class="fw-semibold">{{ inc.codigo or ("INC-%03d"|format(inc.id)) }}</td>
-          <td>{{ inc.titulo }}</td>
-          <td>{{ inc.sede_o_espacio }}</td>
-          <td><span class="badge text-bg-secondary">{{ inc.prioridad }}</span></td>
-          <td><span class="badge text-bg-info">{{ inc.estado }}</span></td>
-          <td>{{ inc.asignado_a }}</td>
-          <td>
-            <a href="{{ url_for('detalle', incidente_id=inc.id) }}" class="btn btn-sm btn-outline-primary">Ver / Gestionar</a>
-          </td>
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="7" class="text-center text-muted py-4">
-            Aún no hay incidentes registrados. Crea el primero desde <strong>+ Nuevo Incidente</strong>.
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-</div>
+</section>
+
+
+<!-- TABLA PRINCIPAL -->
+
+<section class="dashboard-card">
+
+    <div class="p-4 border-bottom
+                d-flex flex-wrap
+                align-items-center
+                justify-content-between gap-2">
+
+        <div>
+            <h2 class="section-title mb-1">
+                Incidentes registrados
+            </h2>
+
+            <p class="text-muted small mb-0">
+                Consulta y seguimiento de incidentes
+            </p>
+        </div>
+
+        <span class="badge text-bg-light border">
+            {{ incidentes | length }} resultados
+        </span>
+
+    </div>
+
+
+    <div class="table-responsive">
+
+        <table class="table table-hover
+                      custom-table align-middle mb-0">
+
+            <thead>
+                <tr>
+                    <th scope="col">Código</th>
+                    <th scope="col">Incidente</th>
+                    <th scope="col">Sede / Espacio</th>
+                    <th scope="col">Prioridad</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Responsable</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for inc in incidentes %}
+
+                    {% set prioridad = (
+                        inc.prioridad | default('', true)
+                    ) %}
+
+                    {% set estado = (
+                        inc.estado | default('', true)
+                    ) %}
+
+                    {% set clase_prioridad = {
+                        'Baja': 'priority-low',
+                        'Media': 'priority-medium',
+                        'Alta': 'priority-high',
+                        'Crítica': 'priority-critical'
+                    }.get(prioridad, 'status-registered') %}
+
+                    {% set clase_estado = {
+                        'Registrado': 'status-registered',
+                        'En atención': 'status-progress',
+                        'Resuelto': 'status-resolved'
+                    }.get(estado, 'status-registered') %}
+
+                    <tr>
+
+                        <td class="fw-semibold text-primary">
+                            {{ inc.codigo or
+                               ("INC-%03d" | format(inc.id)) }}
+                        </td>
+
+                        <td>
+                            <div class="fw-semibold">
+                                {{ inc.titulo }}
+                            </div>
+                        </td>
+
+                        <td>
+                            {{ inc.sede_o_espacio or 'Sin definir' }}
+                        </td>
+
+                        <td>
+                            <span class="status-badge
+                                         {{ clase_prioridad }}">
+                                {{ prioridad or 'Sin definir' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            <span class="status-badge
+                                         {{ clase_estado }}">
+                                {{ estado or 'Sin definir' }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {{ inc.asignado_a or 'Sin asignar' }}
+                        </td>
+
+                        <td>
+                            <a
+                                href="{{ url_for(
+                                    'detalle',
+                                    incidente_id=inc.id
+                                ) }}"
+                                class="btn btn-sm
+                                       btn-outline-primary"
+                                aria-label="Ver y gestionar incidente {{ inc.codigo or inc.id }}">
+                                Ver / Gestionar
+                            </a>
+                        </td>
+
+                    </tr>
+
+                {% else %}
+
+                    <tr>
+                        <td colspan="7">
+
+                            <div class="empty-state">
+
+                                <div class="empty-state-icon"
+                                     aria-hidden="true">
+                                    📋
+                                </div>
+
+                                <h3 class="h6 fw-bold">
+                                    No se encontraron incidentes
+                                </h3>
+
+                                <p class="mb-3">
+                                    No existen registros que
+                                    coincidan con los filtros
+                                    seleccionados, o aún no
+                                    se han creado incidentes.
+                                </p>
+
+                                <a
+                                    href="{{ url_for('registrar') }}"
+                                    class="btn btn-primary">
+                                    + Registrar incidente
+                                </a>
+
+                            </div>
+
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
 {% endblock %}
