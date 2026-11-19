@@ -1,61 +1,104 @@
-{% extends "base.html" %}
-{% block title %}Detalle {{ incidente.codigo }}{% endblock %}
 
-{% block content %}
-<div class="row justify-content-center">
-  <div class="col-lg-8">
-    <div class="card border-0 shadow-sm mb-4">
-      <div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
-        <h5 class="mb-0">{{ incidente.codigo }} · {{ incidente.titulo }}</h5>
-        <a href="{{ url_for('dashboard') }}" class="btn btn-sm btn-outline-secondary">Volver al tablero</a>
-      </div>
-      <div class="card-body">
-        <p class="mb-2"><strong>Categoría:</strong> {{ incidente.categoria }}</p>
-        <p class="mb-2"><strong>Espacio:</strong> {{ incidente.sede_o_espacio }}</p>
-        <p class="mb-2"><strong>Reportado por:</strong> {{ incidente.reportado_por }}</p>
-        <p class="mb-2"><strong>Fecha de registro:</strong> {{ incidente.fecha_creacion }}</p>
-        <p class="mb-0"><strong>Descripción:</strong> {{ incidente.descripcion }}</p>
-      </div>
-    </div>
+/* FONDO DE CIBERSEGURIDAD */
 
-    <div class="card border-0 shadow-sm">
-      <div class="card-header bg-white py-3">
-        <h6 class="mb-0">Actualizar Seguimiento y Estado</h6>
-      </div>
-      <div class="card-body">
-        <form method="POST" action="{{ url_for('detalle', incidente_id=incidente.id) }}">
-          <div class="row g-3 mb-3">
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Estado</label>
-              <select name="estado" class="form-select">
-                {% for est in ["Registrado", "En atención", "Resuelto"] %}
-                  <option value="{{ est }}" {% if incidente.estado == est %}selected{% endif %}>{{ est }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Prioridad</label>
-              <select name="prioridad" class="form-select">
-                {% for prio in ["Baja", "Media", "Alta", "Crítica"] %}
-                  <option value="{{ prio }}" {% if incidente.prioridad == prio %}selected{% endif %}>{{ prio }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label fw-semibold">Responsable asignado</label>
-              <input type="text" name="asignado_a" class="form-control" value="{{ incidente.asignado_a }}" />
-            </div>
-          </div>
+body {
+    background-color: #061526;
+    background-image:
+        radial-gradient(
+            ellipse at 15% 20%,
+            rgba(0, 195, 255, 0.18),
+            transparent 45%
+        ),
+        radial-gradient(
+            ellipse at 85% 80%,
+            rgba(0, 115, 255, 0.16),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #04101f 0%,
+            #0b2540 50%,
+            #061526 100%
+        );
 
-          <div class="mb-3">
-            <label class="form-label fw-semibold">Observaciones / Bitácora de atención</label>
-            <textarea name="observaciones" rows="3" class="form-control" placeholder="Registra avances, diagnóstico o solución aplicada...">{{ incidente.observaciones or '' }}</textarea>
-          </div>
+    background-attachment: fixed;
+    background-size: cover;
+    min-height: 100vh;
+}
 
-          <button type="submit" class="btn btn-success">Guardar Cambios</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock %}
+/* RED DIGITAL DECORATIVA */
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 210, 255, 0.065) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0, 210, 255, 0.065) 1px,
+            transparent 1px
+        );
+
+    background-size: 45px 45px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* CONTENIDO POR ENCIMA DEL FONDO */
+
+.navbar,
+.main-content,
+.footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* TITULOS SOBRE EL FONDO OSCURO */
+
+.dashboard-title,
+.detail-heading {
+    color: #ffffff;
+}
+
+.dashboard-subtitle {
+    color: #b5d2e6;
+}
+
+/* TARJETAS */
+
+.dashboard-card,
+.detail-card,
+.stat-card,
+.summary-card {
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* EFECTO INTERACTIVO */
+
+.stat-card:hover {
+    border-color: #00b5ad;
+    box-shadow: 0 10px 30px rgba(0, 181, 173, 0.18);
+}
+
+/* BARRA DE NAVEGACIÓN */
+
+.navbar {
+    background: rgba(4, 16, 31, 0.96);
+    border-bottom: 1px solid rgba(0, 210, 255, 0.2);
+}
+
+/* PIE DE PAGINA */
+
+.footer {
+    background: #07192b;
+    color: #cbd5e1;
+    border-top: 1px solid rgba(0, 210, 255, 0.15);
+}
+
