@@ -165,6 +165,13 @@ def dashboard():
     incidentes = conn.execute(query, params).fetchall()
     conn.close()
 
+    totales = {
+        "total": total,
+        "registrados": registrados,
+        "en_atencion": en_atencion,
+        "resueltos": resueltos,
+    }
+
     return render_template(
         "dashboard.html",
         incidentes=incidentes,
