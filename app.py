@@ -140,7 +140,7 @@ def logout():
 
 @app.route("/")
 @login_required
-def index():
+def dashboard():
     estado_filtro = request.args.get("estado", "Todos")
     prioridad_filtro = request.args.get("prioridad", "Todas")
 
