@@ -166,7 +166,7 @@ def index():
     conn.close()
 
     return render_template(
-        "index.html",
+        "dashboard.html",
         incidentes=incidentes,
         total=total,
         registrados=registrados,
